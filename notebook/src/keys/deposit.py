@@ -1,15 +1,13 @@
-import sys
 from typing import cast
 
 from web3 import Web3, HTTPProvider
 
-import variables
+from src import variables
 from blockchain.contracts.deposit import DepositContract
 from blockchain.contracts.lido import LidoContract
-from blockchain.contracts.staking_router import StakingRouterContractV2
 from blockchain.web3_extentions.lido_contracts import LidoContracts
 from blockchain.web3_extentions.transaction import TransactionUtils
-from utils.bytes import from_hex_string_to_bytes
+from src.utils import from_hex_string_to_bytes
 from py_ecc.bls import G2ProofOfPossession as bls
 
 from ssz import (
@@ -159,7 +157,7 @@ if __name__ == '__main__':
     w3.provider.make_request('anvil_setBalance', ('0xF59a0EE75c3B378dd85c6316E3eC71EcaB71a175', hex(0)))
     w3.provider.make_request('anvil_setBalance', ('0xF9e02dFC135ED007F0e07e13Ce7A17353cb8c0E1', hex(0)))
     # Current acc
-    w3.provider.make_request('anvil_setBalance', (variables.ACCOUNT.address, hex(321*10**18)))
+    w3.provider.make_request('anvil_setBalance', (variables.ACCOUNT.address, hex(321 * 10 ** 18)))
     w3.provider.make_request('anvil_setBalance', (w3.lido.deposit_security_module.address, hex(1*10**18)))
 
     td = deposit_contract.functions.deposit(
@@ -185,7 +183,7 @@ if __name__ == '__main__':
         ContractFactoryClass=LidoContract,
     ))
 
-    lido.functions.submit(variables.ACCOUNT.address).transact({'from': variables.ACCOUNT.address, 'value': 320*10**18})
+    lido.functions.submit(variables.ACCOUNT.address).transact({'from': variables.ACCOUNT.address, 'value': 320 * 10 ** 18})
 
     dt = lido.functions.deposit(10, 2, b'').transact({
         'from': w3.lido.lido_locator.deposit_security_module.address,

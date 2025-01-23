@@ -3,7 +3,7 @@ import json
 from eth_account import Account
 from eth_account.signers.local import LocalAccount
 
-from utils.icontract import IContract
+from src.utils.icontract import IContract
 
 
 class ICuratedModule:

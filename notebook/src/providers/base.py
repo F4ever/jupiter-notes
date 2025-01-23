@@ -3,11 +3,11 @@ from web3 import Web3 as _Web3, HTTPProvider
 from web3.beacon import Beacon
 from web3.module import Module
 
-from providers.etherscan import Etherscan
-from providers.transactions import TransactionUtils
-from utils.extend_by_key import extend
-from utils.icontract import IContract
-from variables import M_EL_URL, M_CL_URL, ETHERSCAN_API_KEY, H_CL_URL, H_EL_URL
+from src.providers.etherscan import Etherscan
+from src.providers.transactions import TransactionUtils
+from src.utils.extend_by_key import extend
+from src.utils.icontract import IContract
+from src.variables import M_EL_URL, M_CL_URL, ETHERSCAN_API_KEY, H_CL_URL, H_EL_URL
 
 
 class ContractLoader(Module):
@@ -54,7 +54,7 @@ class Web3(_Web3):
         del self.etherscan
 
         self.attach_modules({
-            'cl': lambda: Beacon(M_CL_URL),
+            'cl': lambda: Beacon(M_CL_URL, request_timeout=120),
             'etherscan': lambda: Etherscan(ETHERSCAN_API_KEY, w3.eth.chain_id),
         })
 

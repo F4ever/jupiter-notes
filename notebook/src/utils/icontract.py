@@ -1,27 +1,45 @@
 from IPython.core.display import display_markdown
 from web3.contract import Contract
 
-from utils.table import format_abi, format_table
+from src.utils.table import format_abi, format_table
 
 
 class IContract(Contract):
     def generate_functions_spec(self, search: str):
         mark = ''
 
-        for func in self.all_functions():
+        # Constants
+        views = sorted([func for func in self.all_functions() if func.abi['stateMutability'] in ['constant', 'view', 'pure']], key=lambda f: f.abi['name'])
+        if views:
+            mark += self._generate_functions_spec(views, search)
+
+        mark += '-' * 20
+
+        methods = sorted([func for func in self.all_functions() if func.abi['stateMutability'] not in ['constant', 'view', 'pure']], key=lambda f: f.abi['name'])
+        if methods:
+            # mark += 'Methods list:'
+            mark += self._generate_functions_spec(methods, search)
+
+        if not views and not methods:
+            mark += 'No views or methods found.'
+
+        return mark
+
+    def _generate_functions_spec(self, functions: list, search: str) -> str:
+        res = ''
+        for func in functions:
             input_text = format_abi(func.abi['inputs'], 'input')
             output_text = format_abi(func.abi['outputs'], 'output')
 
             if search.lower() in func.abi['name'].lower():
                 # Markdown is important
-                mark += f'''<details><summary><b>{func.abi['name']}</b></summary>
+                res += f'''<details><summary><b>{func.abi['name']}</b></summary>
 
 {input_text}
 
 {output_text}
 </details>'''
-
-        return mark
+        return res
 
     def spoiler(self):
         spec = self.generate_functions_spec('')
