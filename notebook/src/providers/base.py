@@ -3,11 +3,11 @@ from web3 import Web3 as _Web3, HTTPProvider
 from web3.beacon import Beacon
 from web3.module import Module
 
-from src.providers.etherscan import Etherscan
-from src.providers.transactions import TransactionUtils
-from src.utils.extend_by_key import extend
-from src.utils.icontract import IContract
-from src.variables import M_EL_URL, M_CL_URL, ETHERSCAN_API_KEY, H_CL_URL, H_EL_URL
+from providers.etherscan import Etherscan
+from providers.transactions import TransactionUtils
+from utils.extend_by_key import extend
+from utils.icontract import IContract
+from variables import M_EL_URL, M_CL_URL, ETHERSCAN_API_KEY, H_CL_URL, H_EL_URL, D_EL_URL, D_CL_URL
 
 
 class ContractLoader(Module):
@@ -69,13 +69,25 @@ class Web3(_Web3):
             'etherscan': lambda: Etherscan(ETHERSCAN_API_KEY, w3.eth.chain_id),
         })
 
+    def devnet(self):
+        self.provider = HTTPProvider(D_EL_URL)
 
-w3 = Web3(HTTPProvider(M_EL_URL))
+        del self.cl
+        del self.etherscan
+
+        self.attach_modules({
+            'cl': lambda: Beacon(D_CL_URL),
+            'etherscan': lambda: Etherscan(ETHERSCAN_API_KEY, w3.eth.chain_id),
+        })
 
 
-w3.attach_modules({
-    'cl': lambda: Beacon(M_CL_URL),
-    'etherscan': lambda: Etherscan(ETHERSCAN_API_KEY, w3.eth.chain_id),
-    'contract': ContractLoader,
-    'transaction': TransactionUtils,
-})
+
+def get_w3(EL, CL):
+    w3 = Web3(HTTPProvider(EL))
+
+    w3.attach_modules({
+        'cl': lambda: Beacon(CL),
+        # 'etherscan': lambda: Etherscan(ETHERSCAN_API_KEY, w3.eth.chain_id),
+        'contract': ContractLoader,
+        'transaction': TransactionUtils,
+    })

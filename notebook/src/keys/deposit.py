@@ -7,7 +7,7 @@ from blockchain.contracts.deposit import DepositContract
 from blockchain.contracts.lido import LidoContract
 from blockchain.web3_extentions.lido_contracts import LidoContracts
 from blockchain.web3_extentions.transaction import TransactionUtils
-from src.utils import from_hex_string_to_bytes
+from utils import from_hex_string_to_bytes
 from py_ecc.bls import G2ProofOfPossession as bls
 
 from ssz import (

@@ -1,7 +1,7 @@
 from IPython.core.display import display_markdown
 from web3.contract import Contract
 
-from src.utils.table import format_abi, format_table
+from utils.table import format_abi, format_table
 
 
 class IContract(Contract):

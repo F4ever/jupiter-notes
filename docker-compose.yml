@@ -1,0 +1,35 @@
+networks:
+  pectra-devnet-5-network:
+    name: pectra-devnet-5-network
+    external: true
+
+services:
+  jupiter-notebook:
+    build:
+      context: jupiter-notebook
+      dockerfile: Dockerfile
+    container_name: pectra-devnet-5-jupiter-notebook_jnotebook
+    hostname: pectra-devnet-5-jupiter-notebook
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 1m
+        max-file: "1"
+    deploy:
+      resources:
+        limits:
+          cpus: 2
+          memory: 3G
+    networks:
+      - pectra-devnet-5-network
+    ports:
+      - 0.0.0.0:8888:8888
+    labels:
+      - "prometheus-job=pectra-devnet-5-jupiter-notebook"
+      - "traefik.http.routers.pectra-devnet-5-jupiter-notebook.rule=Host(`hr6vb81d1ndsx-pectra-devnet-5-jupiter.valset-01.testnet.fi`)"
+      - "traefik.http.services.pectra-devnet-5-jupiter-notebook.loadbalancer.server.port=8888"
+      - "traefik.http.routers.pectra-devnet-5-jupiter-notebook.service=pectra-devnet-5-jupiter-notebook"
+      - "traefik.http.routers.pectra-devnet-5-jupiter-notebook.tls=false"
+    volumes:
+      - /etc/docker-compose/pectra-devnet-5-jupiter-notebook/notebooks/:/app/notebook/
